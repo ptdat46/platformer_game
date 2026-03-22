@@ -503,7 +503,6 @@ function animate(backgroundCanvas) {
     const gem = gems[i]
     gem.update(deltaTime)
 
-    // THIS IS WHERE WE ARE COLLECTING GEMS
     const collisionDirection = checkCollisions(player, gem)
     if (collisionDirection) {
       // create an item feedback animation
