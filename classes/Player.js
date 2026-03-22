@@ -2,6 +2,10 @@ const X_VELOCITY = 200
 const JUMP_POWER = 250
 const GRAVITY = 580
 
+// World dimensions (143 cols × 37 rows × 16 px per tile)
+const WORLD_WIDTH  = 143 * 16  // 2288
+const WORLD_HEIGHT = 37 * 16   // 592
+
 class Player {
   constructor({ x, y, size, velocity = { x: 0, y: 0 } }) {
     this.x = x
@@ -151,6 +155,12 @@ class Player {
     // Update vertical position and check collisions
     this.updateVerticalPosition(deltaTime)
     this.checkForVerticalCollisions(collisionBlocks)
+
+    // Clamp player position to world boundaries
+    if (this.x < 0) this.x = 0
+    if (this.x > WORLD_WIDTH - this.width) this.x = WORLD_WIDTH - this.width
+    if (this.y < 0) this.y = 0
+    if (this.y > WORLD_HEIGHT - this.height) this.y = WORLD_HEIGHT - this.height
 
     this.determineDirection()
     this.switchSprites()

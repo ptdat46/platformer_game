@@ -197,6 +197,11 @@ let camera = {
 const SCROLL_POST_RIGHT = 330
 const SCROLL_POST_TOP = 100
 const SCROLL_POST_BOTTOM = 220
+const VIEW_WIDTH   = 1024
+const VIEW_HEIGHT  = 576
+// NOTE: WORLD_WIDTH/WORLD_HEIGHT are declared in Player.js — do NOT redeclare
+const MAX_CAMERA_X  = Math.max(0, WORLD_WIDTH - VIEW_WIDTH)
+const MAX_CAMERA_Y  = Math.max(0, WORLD_HEIGHT - VIEW_HEIGHT)
 let oceanBackgroundCanvas = null
 let brambleBackgroundCanvas = null
 let gems = []
@@ -530,28 +535,31 @@ function animate(backgroundCanvas) {
   }
 
   // Track scroll post distance
-  if (player.x > SCROLL_POST_RIGHT && player.x < 1680) {
-    const scrollPostDistance = player.x - SCROLL_POST_RIGHT
-    camera.x = scrollPostDistance
+  if (player.x > SCROLL_POST_RIGHT) {
+    camera.x = player.x - SCROLL_POST_RIGHT
   }
 
-  if (player.y < SCROLL_POST_TOP && camera.y > 0) {
-    const scrollPostDistance = SCROLL_POST_TOP - player.y
-    camera.y = scrollPostDistance
+  if (player.y < SCROLL_POST_TOP && camera.y > -MAX_CAMERA_Y) {
+    camera.y = SCROLL_POST_TOP - player.y
   }
 
   if (player.y > SCROLL_POST_BOTTOM) {
-    const scrollPostDistance = player.y - SCROLL_POST_BOTTOM
-    camera.y = -scrollPostDistance
+    camera.y = -(player.y - SCROLL_POST_BOTTOM)
   }
+
+  // Clamp camera to world bounds
+  if (camera.x < 0) camera.x = 0
+  if (camera.x > MAX_CAMERA_X) camera.x = MAX_CAMERA_X
+  if (camera.y < -MAX_CAMERA_Y) camera.y = -MAX_CAMERA_Y
+  if (camera.y > 0) camera.y = 0
 
   // Render scene
   c.save()
   c.scale(dpr + 1, dpr + 1)
   c.translate(-camera.x, camera.y)
   c.clearRect(0, 0, canvas.width, canvas.height)
-  c.drawImage(oceanBackgroundCanvas, camera.x * 0.32, 0)
-  c.drawImage(brambleBackgroundCanvas, camera.x * 0.16, 0)
+  c.drawImage(oceanBackgroundCanvas, 0, 0)
+  c.drawImage(brambleBackgroundCanvas, 0, 0)
   c.drawImage(backgroundCanvas, 0, 0)
   player.draw(c)
 
