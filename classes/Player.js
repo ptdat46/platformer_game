@@ -2,9 +2,10 @@ const X_VELOCITY = 200
 const JUMP_POWER = 250
 const GRAVITY = 580
 
-// World dimensions (143 cols × 37 rows × 16 px per tile)
+// World dimensions (143 cols × 64 rows × 16 px per tile)
+// Taller world so camera can scroll down into pits/deep areas
 const WORLD_WIDTH  = 143 * 16  // 2288
-const WORLD_HEIGHT = 37 * 16   // 592
+const WORLD_HEIGHT = 64 * 16   // 1024
 
 class Player {
   constructor({ x, y, size, velocity = { x: 0, y: 0 } }) {
